@@ -1,0 +1,35 @@
+name: Check Code Comments
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  check-forbidden-comments:
+    name: Check for forbidden comments
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for BROKEN, FIXME, and HACK comments
+        run: |
+          echo "Searching for forbidden comments in source code..."
+
+          FOUND_FILES=$(grep -rn --include="*.ts" --include="*.js" --include="*.tsx" --include="*.jsx" --exclude-dir="node_modules" --exclude-dir="dist" -E "//\s*(BROKEN|FIXME|HACK)" . || true)
+
+          if [ -n "$FOUND_FILES" ]; then
+            echo "❌ Found forbidden comments in the following locations:"
+            echo "$FOUND_FILES"
+            echo ""
+            echo "Please fix or remove the following comment types before merging:"
+            echo "  - // BROKEN"
+            echo "  - // FIXME"
+            echo "  - // HACK"
+            exit 1
+          else
+            echo "✅ No forbidden comments found!"
+          fi
