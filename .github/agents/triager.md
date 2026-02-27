@@ -5,9 +5,10 @@ on:
   issues:
     types:
       - opened
-permissions:
-  issues: write
-  contents: read
+github:
+  permissions:
+    issues: write
+    contents: read
 mcp-servers:
   github-mcp-server:
     type: http
