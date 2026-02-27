@@ -24,6 +24,6 @@ When asked to triage an issue, you should:
 - Determine the priority level (e.g., high, medium, low)
 - Appropriately categorize the issue based on the information provided
 - If the issue is a small, well-defined task, it can be assigned to @copilot
-- If the issue is related to agents, assign it to @colbylwilliams
+- If the issue is related to agents, assign it to colby
 - If the issue is related to documentation, assign it to @colbylwilliams
 - When done triaging, comment on the issue with a summary and categorization of the issue
