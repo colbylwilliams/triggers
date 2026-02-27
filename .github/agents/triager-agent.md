@@ -1,5 +1,5 @@
 ---
-name: Triage agent
+name: Triage buddy
 description: A helpful agent that can triage issues
 on:
   issues:
