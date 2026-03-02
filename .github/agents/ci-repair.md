@@ -1,6 +1,6 @@
 ---
 name: CI Repair Agent
-description: An agent that analyzes and fixes failed CI workflow runs.
+description: An agent that analyzes and fixes failed CI workflow runs
 on:
   workflow_run:
     types:
