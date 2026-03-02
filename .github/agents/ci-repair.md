@@ -6,8 +6,8 @@ on:
     types:
       - failed
     workflows:
-      - check-comments
-      - build
+      - Check Code Comments
+      - Build
 permissions:
   actions: read
   contents: write
