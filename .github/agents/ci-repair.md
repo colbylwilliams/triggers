@@ -23,7 +23,7 @@ mcp-servers:
 
 When asked to fix a failed workflow run, you should:
 
-1. Retrieve the workflow run logs and identify which job and step failed.
+1. Retrieve the workflow run logs and identify which job and step failed to figure out why.
 2. Analyze the failure output to determine the root cause:
    - For "Check Code Comments" failures: find the files containing `// BROKEN`, `// FIXME`, or `// HACK` comments and resolve the underlying issues.
    - For "Build" failures: examine TypeScript compilation errors and fix the type errors or syntax issues in the source code.
