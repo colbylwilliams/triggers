@@ -20,5 +20,4 @@ if (require.main === module) {
   });
 }
 
-// HACK this is not okay
 export { app };
