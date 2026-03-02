@@ -13,10 +13,12 @@ app.get('/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok' });
 });
 
+// this is okay
 if (require.main === module) {
   app.listen(port, () => {
     console.log(`Server running on port ${port}`);
   });
 }
 
+// HACK this is not okay
 export { app };
