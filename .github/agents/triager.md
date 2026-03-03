@@ -1,6 +1,6 @@
 ---
 name: Triage agent
-description: A helpful agent that can triage issues
+description: An agent that can triage issues
 on:
   issues:
     types:
