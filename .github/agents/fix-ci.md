@@ -8,10 +8,11 @@ on:
     workflows:
       - 'Check Code Comments'
       - Build
-permissions:
-  actions: read
-  contents: write
-  workflows: write
+github:
+  permissions:
+    actions: read
+    contents: write
+    workflows: write
 mcp-servers:
   github-mcp-server:
     type: http
