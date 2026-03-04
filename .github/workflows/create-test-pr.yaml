@@ -1,0 +1,81 @@
+name: Create Test PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      failure_type:
+        description: 'Type of failure to introduce in the PR'
+        required: true
+        type: choice
+        options:
+          - forbidden-comment
+          - typescript-error
+          - both
+        default: 'forbidden-comment'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  create-test-pr:
+    name: Create test branch and PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Create branch and introduce failure
+        id: create-branch
+        run: |
+          BRANCH_NAME="test/trigger-failure-$(date +%Y%m%d-%H%M%S)"
+          echo "branch=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
+
+          git checkout -b "$BRANCH_NAME"
+
+          FAILURE_TYPE="${{ inputs.failure_type }}"
+
+          if [[ "$FAILURE_TYPE" == "typescript-error" || "$FAILURE_TYPE" == "both" ]]; then
+            sed -i 's#const port = process.env.PORT || 3000;#const port: number = "not a number"; // type error#' app/src/index.ts
+            grep -q '"not a number"' app/src/index.ts || { echo "::error::Failed to introduce typescript error"; exit 1; }
+          fi
+
+          if [[ "$FAILURE_TYPE" == "forbidden-comment" || "$FAILURE_TYPE" == "both" ]]; then
+            sed -i '/export { app };/i // HACK this needs to be refactored' app/src/index.ts
+            grep -q '// HACK' app/src/index.ts || { echo "::error::Failed to introduce forbidden comment"; exit 1; }
+          fi
+
+          case "$FAILURE_TYPE" in
+            forbidden-comment)
+              echo "pr_title=Add a HACK comment to trigger check-comments failure" >> "$GITHUB_OUTPUT"
+              ;;
+            typescript-error)
+              echo "pr_title=Introduce a TypeScript type error to trigger build failure" >> "$GITHUB_OUTPUT"
+              ;;
+            both)
+              echo "pr_title=Add a forbidden comment and TypeScript error to trigger both failures" >> "$GITHUB_OUTPUT"
+              ;;
+          esac
+
+          git add app/src/index.ts
+          git commit -m "Test: introduce $FAILURE_TYPE failure"
+          git push origin "$BRANCH_NAME"
+
+      - name: Create pull request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --base main \
+            --head "${{ steps.create-branch.outputs.branch }}" \
+            --title "${{ steps.create-branch.outputs.pr_title }}" \
+            --body "This PR was automatically created by the **Create Test PR** workflow to test CI failure triggers.
+
+          **Failure type:** \`${{ inputs.failure_type }}\`
+
+          The CI workflows should fail on this PR, which will trigger the CI Repair agent."
