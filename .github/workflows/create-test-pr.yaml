@@ -1,0 +1,73 @@
+name: Create Test PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      failure_type:
+        description: 'Type of failure to introduce'
+        required: true
+        type: choice
+        options:
+          - forbidden-comment
+          - typescript-error
+          - both
+        default: 'forbidden-comment'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  create-test-pr:
+    name: Create test branch and PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Create branch and introduce failure
+        id: create-branch
+        run: |
+          BRANCH_NAME="test/trigger-failure-$(date +%Y%m%d-%H%M%S)"
+          echo "branch=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
+
+          git checkout -b "$BRANCH_NAME"
+
+          case "${{ inputs.failure_type }}" in
+            forbidden-comment)
+              sed -i 's|export { app };|// HACK this needs to be refactored\nexport { app };|' app/src/index.ts
+              echo "description=Add a forbidden HACK comment to trigger check-comments failure" >> "$GITHUB_OUTPUT"
+              ;;
+            typescript-error)
+              sed -i 's#const port = process.env.PORT || 3000;#const port: number = "not a number"; // type error#' app/src/index.ts
+              echo "description=Introduce a TypeScript type error to trigger build failure" >> "$GITHUB_OUTPUT"
+              ;;
+            both)
+              sed -i 's#const port = process.env.PORT || 3000;#const port: number = "not a number"; // type error#' app/src/index.ts
+              sed -i 's|export { app };|// HACK this needs to be refactored\nexport { app };|' app/src/index.ts
+              echo "description=Add a forbidden comment and a TypeScript error to trigger both workflow failures" >> "$GITHUB_OUTPUT"
+              ;;
+          esac
+
+          git add app/src/index.ts
+          git commit -m "Test: introduce ${{ inputs.failure_type }} failure"
+          git push origin "$BRANCH_NAME"
+
+      - name: Create pull request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --base main \
+            --head "${{ steps.create-branch.outputs.branch }}" \
+            --title "${{ steps.create-branch.outputs.description }}" \
+            --body "This PR was automatically created by the **Create Test PR** workflow to test CI failure triggers.
+
+          **Failure type:** \`${{ inputs.failure_type }}\`
+
+          The CI workflows should fail on this PR, which will trigger the CI Repair agent."
