@@ -8,6 +8,7 @@ A test repository for workflow failed triggers — specifically testing the patt
 |----------|------|-------------|
 | **Check Code Comments** | `.github/workflows/check-comments.yaml` | Scans source files for `// BROKEN`, `// FIXME`, `// HACK` comments and fails if any are found |
 | **Build** | `.github/workflows/build.yaml` | Runs `npm ci` and `tsc` in the `app/` directory; fails on TypeScript compilation errors |
+| **Create Test PR** | `.github/workflows/create-test-pr.yaml` | Creates a branch/PR with an intentional failure to trigger the CI Repair agent |
 
 ## Agents
 
@@ -38,6 +39,16 @@ const port: number = "not a number"; // type error
 
 The **Build** workflow will fail on `tsc`, triggering the CI Repair agent.
 
-### Method 3: Manual dispatch
+### Method 3: Create Test PR workflow (recommended)
+
+Run the **Create Test PR** workflow from the Actions tab with `workflow_dispatch`. Choose a failure type:
+
+- **forbidden-comment** — adds a `// HACK` comment (fails Check Code Comments)
+- **typescript-error** — introduces a type error (fails Build)
+- **both** — introduces both failures
+
+The workflow creates a timestamped branch, commits the failure, and opens a PR automatically.
+
+### Method 4: Manual dispatch
 
 Both workflows support `workflow_dispatch` — trigger them manually from the Actions tab.
