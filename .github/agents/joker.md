@@ -4,7 +4,7 @@ description: An agent that lightens the mood
 on:
   interval:
     types:
-      - hourly
+      - daily
 github:
   permissions:
     issues: write
