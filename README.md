@@ -8,6 +8,7 @@ A test repository for workflow failed triggers — specifically testing the patt
 |----------|------|-------------|
 | **Check Code Comments** | `.github/workflows/check-comments.yaml` | Scans source files for `// BROKEN`, `// FIXME`, `// HACK` comments and fails if any are found |
 | **Build** | `.github/workflows/build.yaml` | Runs `npm ci` and `tsc` in the `app/` directory; fails on TypeScript compilation errors |
+| **Joker** | `.github/workflows/joker.yaml` | Runs on a schedule every hour, triggering the Joker agent |
 
 ## Agents
 
@@ -15,6 +16,7 @@ A test repository for workflow failed triggers — specifically testing the patt
 |-------|------|---------|
 | **CI Repair** | `.github/agents/ci-repair.md` | `workflow_run: failed` on Check Code Comments and Build workflows |
 | **Triager** | `.github/agents/triager.md` | `issues: opened` |
+| **Joker** | `.github/agents/joker.md` | `schedule` hourly |
 
 ## How to trigger a workflow failure
 
