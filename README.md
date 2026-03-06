@@ -13,8 +13,10 @@ A test repository for workflow failed triggers — specifically testing the patt
 
 | Agent | File | Trigger |
 |-------|------|---------|
-| **CI Repair** | `.github/agents/ci-repair.md` | `workflow_run: failed` on Check Code Comments and Build workflows |
+| **CI Repair** | `.github/agents/fix-ci.md` | `workflow_run: failed` on Check Code Comments and Build workflows |
 | **Triager** | `.github/agents/triager.md` | `issues: opened` |
+| **Joker** | `.github/agents/joker.md` | `interval: daily` |
+| **Weekly Update** | `.github/agents/weekly-update.md` | `interval: weekly` |
 
 ## How to trigger a workflow failure
 
