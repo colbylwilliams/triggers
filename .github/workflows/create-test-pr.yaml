@@ -78,4 +78,4 @@ jobs:
 
           **Failure type:** \`${{ inputs.failure_type }}\`
 
-          The CI workflows should fail on this PR, which will trigger the CI Repair agent."
+          The CI workflows should fail on this PR, which will trigger the Fix CI agent."
