@@ -1,5 +1,7 @@
 # triggers
 
+[🇪🇸 Español](README.es.md)
+
 A test repository for workflow failed triggers — specifically testing the pattern where a CI workflow fails and a Copilot agent is automatically triggered to analyze and fix the failure.
 
 ## Workflows
