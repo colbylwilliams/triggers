@@ -8,13 +8,15 @@ A test repository for workflow failed triggers — specifically testing the patt
 |----------|------|-------------|
 | **Check Code Comments** | `.github/workflows/check-comments.yaml` | Scans source files for `// BROKEN`, `// FIXME`, `// HACK` comments and fails if any are found |
 | **Build** | `.github/workflows/build.yaml` | Runs `npm ci` and `tsc` in the `app/` directory; fails on TypeScript compilation errors |
+| **Create Test PR** | `.github/workflows/create-test-pr.yaml` | Manually creates a branch and PR with a chosen failure type to test CI triggers |
 
 ## Agents
 
 | Agent | File | Trigger |
 |-------|------|---------|
-| **CI Repair** | `.github/agents/ci-repair.md` | `workflow_run: failed` on Check Code Comments and Build workflows |
+| **CI Repair** | `.github/agents/fix-ci.md` | `workflow_run: failed` on Check Code Comments and Build workflows |
 | **Triager** | `.github/agents/triager.md` | `issues: opened` |
+| **Joker** | `.github/agents/joker.md` | `interval: daily` — creates a new issue with a joke each day |
 
 ## How to trigger a workflow failure
 
@@ -38,6 +40,10 @@ const port: number = "not a number"; // type error
 
 The **Build** workflow will fail on `tsc`, triggering the CI Repair agent.
 
-### Method 3: Manual dispatch
+### Method 3: Create Test PR workflow
 
-Both workflows support `workflow_dispatch` — trigger them manually from the Actions tab.
+Use the **Create Test PR** workflow from the Actions tab to automatically create a branch and PR with your chosen failure type (`forbidden-comment`, `typescript-error`, or `both`).
+
+### Method 4: Manual dispatch
+
+The **Check Code Comments** and **Build** workflows support `workflow_dispatch` — trigger them manually from the Actions tab.
