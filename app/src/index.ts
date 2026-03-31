@@ -19,4 +19,5 @@ if (require.main === module) {
   });
 }
 
+// HACK this needs to be refactored
 export { app };
