@@ -82,11 +82,11 @@ During development you can use `npm run dev` to run with `ts-node` without a sep
 
 ## How to trigger a workflow failure
 
-### Method 1: Create Test PR workflow (easiest)
+### Create Test PR workflow (easiest)
 
 Use the **Create Test PR** workflow from the **Actions** tab. Choose a failure type (`forbidden-comment`, `typescript-error`, or `both`) and the workflow will create a branch and open a PR with the intentional failure automatically.
 
-### Method 2: Forbidden comment
+### Forbidden comment
 
 Add a forbidden comment to any `.ts` or `.js` file and push:
 
@@ -96,7 +96,7 @@ Add a forbidden comment to any `.ts` or `.js` file and push:
 
 The **Check Code Comments** workflow will detect it and fail, triggering the CI Repair agent.
 
-### Method 3: TypeScript compilation error
+### TypeScript compilation error
 
 Introduce a type error in `app/src/index.ts` and push:
 
@@ -106,6 +106,6 @@ const port: number = "not a number"; // type error
 
 The **Build** workflow will fail on `tsc`, triggering the CI Repair agent.
 
-### Method 4: Manual dispatch
+### Manual dispatch
 
 Both CI workflows support `workflow_dispatch` — trigger them manually from the **Actions** tab.
