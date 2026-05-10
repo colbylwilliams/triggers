@@ -25,6 +25,6 @@ jobs:
               body: [
                 'Automated daily trigger for the **joker** agent.',
                 '',
-                'When triggered create a new issue in this repo with a joke.'
+                'When triggered, create a new issue in this repo with a joke.'
               ].join('\n')
             });
