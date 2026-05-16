@@ -1,0 +1,46 @@
+name: Trigger Joker Daily
+
+on:
+  schedule:
+    - cron: '0 15 * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  trigger-joker:
+    name: Open daily joker request
+    runs-on: ubuntu-latest
+    steps:
+      - name: Open issue to trigger joker agent
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const date = new Date().toISOString().slice(0, 10);
+            const title = `Daily joker trigger (${date})`;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            const existing = await github.rest.search.issuesAndPullRequests({
+              q: `repo:${owner}/${repo} is:issue is:open in:title "${title}"`,
+              per_page: 1
+            });
+
+            if (existing.data.total_count > 0) {
+              core.info(`Issue already exists for ${date}; skipping.`);
+              return;
+            }
+
+            await github.rest.issues.create({
+              owner,
+              repo,
+              title,
+              body: [
+                'Scheduled daily trigger request for the `joker` agent.',
+                '',
+                'Please run the `joker` agent.',
+                '',
+                'When triggered, create a new issue in this repository with a joke.'
+              ].join('\n')
+            });
