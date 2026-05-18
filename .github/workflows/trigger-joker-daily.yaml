@@ -1,0 +1,30 @@
+name: Trigger Joker Daily
+
+on:
+  schedule:
+    - cron: '0 14 * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  open-joker-issue:
+    name: Open daily joker issue
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create daily issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const today = new Date().toISOString().slice(0, 10);
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Daily Joker Trigger - ${today}`,
+              body: [
+                'This issue is automatically created by the **Trigger Joker Daily** workflow.',
+                '',
+                '@copilot please use the **joker** agent and share a joke.'
+              ].join('\n')
+            });
